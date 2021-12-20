@@ -157,6 +157,8 @@
     <Library Include="Dependencies\lib\glfw3.lib" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="assets\shaders\fragmentShader.glsl" />
+    <None Include="assets\shaders\vertexShader.glsl" />
     <None Include="Dependencies\lib\glfw3.pdb" />
   </ItemGroup>
   <ItemGroup>
@@ -165,6 +167,7 @@
     <ClInclude Include="Dependencies\include\GLFW\glfw3native.h" />
     <ClInclude Include="Dependencies\include\KHR\khrplatform.h" />
     <ClInclude Include="headers\core.h" />
+    <ClInclude Include="headers\shader.h" />
     <ClInclude Include="headers\window\input.h" />
     <ClInclude Include="headers\window\window.h" />
   </ItemGroup>

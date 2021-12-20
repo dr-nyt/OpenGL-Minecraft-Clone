@@ -1,4 +1,5 @@
 #include "window/input.h"
+#include "window/window.h"
 
 namespace MinecraftClone {
 	namespace Input {
@@ -8,6 +9,12 @@ namespace MinecraftClone {
 		float mouseY = 0.0f;
 		float mouseScrollX = 0.0f;
 		float mouseScrollY = 0.0f;
+
+		void handleKeyInput() {
+			if (Input::isKeyDown(GLFW_KEY_ESCAPE)) {
+				Window::close();
+			}
+		}
 
 		void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 			if (key >= 0 && key < GLFW_KEY_LAST) {

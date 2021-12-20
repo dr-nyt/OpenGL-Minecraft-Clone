@@ -33,6 +33,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\lib\glfw3.pdb" />
+    <None Include="assets\shaders\vertexShader.glsl" />
+    <None Include="assets\shaders\fragmentShader.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\include\glad\glad.h">
@@ -54,6 +56,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="headers\window\input.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
