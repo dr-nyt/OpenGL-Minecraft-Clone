@@ -19,7 +19,9 @@ int main() {
 	// Initialize shader
 	// Remember to delete shaders created this way at the end
 	Shader::Shader* shader = NULL;
-	try { shader = new Shader::Shader("assets/shaders/vertexShader.glsl", "assets/shaders/fragmentShader.glsl"); }
+	try {
+		shader = new Shader::Shader("assets/shaders/vertexShader.glsl", "assets/shaders/fragmentShader.glsl");
+	}
 	catch (std::exception& e) {
 		std::cout << e.what() << std::endl;
 		terminateGLFW();
@@ -38,7 +40,7 @@ int main() {
 	// Automaticall calculate required data
 	GLuint vertexLen = sizeof(Shader::Vertex) / sizeof(float);
 	GLsizeiptr verticesByteSize = sizeof(vertices);
-	GLuint vertexCount = verticesByteSize / vertexLen / sizeof(float);
+	GLuint vertexCount = (GLuint)(verticesByteSize / vertexLen / sizeof(float));
 	// Set usage type GL_STATIC_DRAW, GL_DYNAMIC_DRAW, etc.
 	GLenum usage = GL_STATIC_DRAW;
 
@@ -48,7 +50,7 @@ int main() {
 		2, 3, 0
 	};
 	GLuint indicesByteSize = sizeof(indices);
-	GLuint indicesLen = indicesByteSize / sizeof(GLuint);
+	GLuint indicesLen = (GLuint)(indicesByteSize / sizeof(GLuint));
 
 	// Create VAO, VBO, EBO & set attributes
 	GLuint vaoID = Shader::createVAO();
