@@ -10,3 +10,10 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+
+namespace Engine {
+	struct Vertex {
+		glm::vec3 position;
+		glm::vec4 color;
+	};
+}
