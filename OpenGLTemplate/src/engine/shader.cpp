@@ -48,6 +48,7 @@ namespace Engine {
 		if (!success) {
 			glGetShaderInfoLog(vertexShaderId, 512, NULL, infoLog);
 			std::cout << infoLog << std::endl;
+			glDeleteShader(vertexShaderId);
 			throw std::exception("ERROR::SHADER::VERTEX::COMPILATION_FAILED\n");
 		}
 
@@ -61,65 +62,94 @@ namespace Engine {
 			glGetShaderInfoLog(fragmentShaderId, 512, NULL, infoLog);
 			std::cout << infoLog << std::endl;
 			glDeleteShader(vertexShaderId);
+			glDeleteShader(fragmentShaderId);
 			throw std::exception("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n");
 		}
 
 		// Shader program
-		shaderID = glCreateProgram();
-		glAttachShader(shaderID, vertexShaderId);
-		glAttachShader(shaderID, fragmentShaderId);
-		glLinkProgram(shaderID);
+		shaderId = glCreateProgram();
+		glAttachShader(shaderId, vertexShaderId);
+		glAttachShader(shaderId, fragmentShaderId);
+		glLinkProgram(shaderId);
 		// Check for shader program linking errors
-		glGetProgramiv(shaderID, GL_LINK_STATUS, &success);
+		glGetProgramiv(shaderId, GL_LINK_STATUS, &success);
 		if (!success) {
-			glGetProgramInfoLog(shaderID, 512, NULL, infoLog);
+			glGetProgramInfoLog(shaderId, 512, NULL, infoLog);
 			std::cout << infoLog << std::endl;
 			glDeleteShader(vertexShaderId);
 			glDeleteShader(fragmentShaderId);
+			glDeleteProgram(shaderId);
 			throw std::exception("ERROR::PROGRAM::LINKING_FAILED\n");
 		}
 
 		// Delete vertex and fragment shader instances as they have been linked
-		glDetachShader(shaderID, vertexShaderId);
-		glDetachShader(shaderID, fragmentShaderId);
+		glDetachShader(shaderId, vertexShaderId);
+		glDetachShader(shaderId, fragmentShaderId);
 		glDeleteShader(vertexShaderId);
 		glDeleteShader(fragmentShaderId);
+
+		// 3. Get uniform locations, and update the hashmap
+		GLint numUniforms;
+		glGetProgramiv(shaderId, GL_ACTIVE_UNIFORMS, &numUniforms);
+		GLint maxCharLength;
+		glGetProgramiv(shaderId, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxCharLength);
+
+		if (numUniforms > 0 && maxCharLength > 0) {
+			char* charBuffer = new char[maxCharLength];
+			for (int i = 0; i < numUniforms; i++) {
+				int length, size;
+				GLenum dataType;
+				glGetActiveUniform(shaderId, i, maxCharLength, &length, &size, &dataType, charBuffer);
+				GLint varLocation = glGetUniformLocation(shaderId, charBuffer);
+				printf("Uniform %s has location %d\n", charBuffer, varLocation);
+				uniformLocations[charBuffer] = varLocation;
+			}
+			delete[] charBuffer;
+		}
 	}
 
 	// Use / Activate the shader
 	void Shader::use() {
-		glUseProgram(shaderID);
+		glUseProgram(shaderId);
 	}
 
 	void Shader::setBool(const std::string& name, const bool value) {
-		glUniform1i(glGetUniformLocation(shaderID, name.c_str()), (int)value);
+		use();
+		glUniform1i(uniformLocations[name], (int)value);
 	}
 
 	void Shader::setInt(const std::string& name, const int value) {
-		glUniform1i(glGetUniformLocation(shaderID, name.c_str()), value);
+		use();
+		glUniform1i(uniformLocations[name], value);
 	}
 
 	void Shader::setFloat(const std::string& name, const float value) {
-		glUniform1f(glGetUniformLocation(shaderID, name.c_str()), value);
+		use();
+		glUniform1f(uniformLocations[name], value);
 	}
 
 	void Shader::setMat3(const std::string& name, const glm::mat3 mat) {
-		glUniformMatrix3fv(glGetUniformLocation(shaderID, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat));
+		use();
+		glUniformMatrix3fv(uniformLocations[name], 1, GL_FALSE, glm::value_ptr(mat));
 	}
 
 	void Shader::setMat4(const std::string& name, const glm::mat4 mat) {
-		glUniformMatrix4fv(glGetUniformLocation(shaderID, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat));
+		use();
+		glUniformMatrix4fv(uniformLocations[name], 1, GL_FALSE, glm::value_ptr(mat));
 	}
 
 	void Shader::setVec2(const std::string& name, const glm::vec2 vec) {
-		glUniform2f(glGetUniformLocation(shaderID, name.c_str()), vec.x, vec.y);
+		use();
+		glUniform2f(uniformLocations[name], vec.x, vec.y);
 	}
 
 	void Shader::setVec3(const std::string& name, const glm::vec3 vec) {
-		glUniform3f(glGetUniformLocation(shaderID, name.c_str()), vec.x, vec.y, vec.z);
+		use();
+		glUniform3f(uniformLocations[name], vec.x, vec.y, vec.z);
 	}
 
 	void Shader::setVec4(const std::string& name, const glm::vec4 vec) {
-		glUniform4f(glGetUniformLocation(shaderID, name.c_str()), vec.x, vec.y, vec.z, vec.w);
+		use();
+		glUniform4f(uniformLocations[name], vec.x, vec.y, vec.z, vec.w);
 	}
 }

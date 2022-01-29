@@ -4,7 +4,8 @@
 namespace Engine {
 	class Shader {
 	private:
-		unsigned int shaderID;
+		GLuint shaderId;
+		std::unordered_map<std::string, int> uniformLocations;
 
 	public:
 		Shader(const std::string& vertexPath, const std::string& fragmentPath);

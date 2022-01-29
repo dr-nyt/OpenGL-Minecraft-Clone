@@ -102,7 +102,7 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// Handle input
-		Input::handleKeyInput();
+		Input::handleKeyInput(transformMatrix);
 
 		// Render
 		Buffers::useVAO(vaoID);
@@ -124,9 +124,21 @@ int main() {
 	return 0;
 }
 
-void Input::handleKeyInput() {
+void Input::handleKeyInput(glm::mat4 &t) {
 	if (Input::isKeyDown(GLFW_KEY_ESCAPE)) {
 		Window::close();
+	}
+	if (Input::isKeyDown(GLFW_KEY_W)) {
+		t = glm::translate(t, glm::vec3(0.0f, 0.1f, 0.0f));
+	}
+	if (Input::isKeyDown(GLFW_KEY_S)) {
+		t = glm::translate(t, glm::vec3(0.0f, -0.1f, 0.0f));
+	}
+	if (Input::isKeyDown(GLFW_KEY_A)) {
+		t = glm::translate(t, glm::vec3(-0.1f, 0.0f, 0.0f));
+	}
+	if (Input::isKeyDown(GLFW_KEY_D)) {
+		t = glm::translate(t, glm::vec3(0.1f, 0.0f, 0.0f));
 	}
 }
 

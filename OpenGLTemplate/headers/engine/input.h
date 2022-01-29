@@ -11,7 +11,7 @@ namespace Engine {
 		extern float mouseScrollY;
 
 		// Handle user input
-		void handleKeyInput();
+		void handleKeyInput(glm::mat4 &t);
 
 		// Utility
 		bool isKeyDown(int key);
